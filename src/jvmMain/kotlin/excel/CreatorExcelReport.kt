@@ -15,31 +15,39 @@ import kotlin.math.pow
 class CreatorExcelReport(
     private val coroutineScope: CoroutineScope,
 ) {
+    /**
+     * TODO: Обработка ошибки
+     */
     fun onSave(filesData: List<FileData>, file: File) {
         coroutineScope.launch(Dispatchers.IO) {
-            workbook {
-                sheet("Customers") {
-                    row {
-                        cell("Имя")
-                        cell("Имя с заменой подчеркивания")
-                        cell("Количество страниц")
-//                        cell("Размер, бит")
-                        cell("Размер, КБ")
-//                        cell("Размер, МБ")
-                    }
-                    for (fileData in filesData)
+            try {
+                workbook {
+                    sheet("Customers") {
                         row {
-                            with(fileData) {
-                                cell(name)
-                                cell(name.replaceLastElement('_', '/'))
-                                cell(pageCount)
-//                                cell(size)
-                                cell(size.toKbait())
-//                                cell(size.toMbait())
-                            }
+                            cell("Имя")
+                            cell("Имя с заменой подчеркивания")
+                            cell("Количество страниц")
+//                        cell("Размер, бит")
+                            cell("Размер, КБ")
+//                        cell("Размер, МБ")
                         }
-                }
-            }.write(file.absolutePath)
+                        for (fileData in filesData)
+                            row {
+                                with(fileData) {
+                                    cell(name)
+                                    cell(name.replaceLastElement('_', '/'))
+                                    cell(pageCount)
+//                                cell(size)
+                                    cell(size.toKbait())
+//                                cell(size.toMbait())
+                                }
+                            }
+                    }
+                }.write(file.absolutePath)
+            } catch (e: Exception) {
+
+            }
         }
+
     }
 }
