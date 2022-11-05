@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation("io.github.evanrupert:excelkt:1.0.2")
+                implementation("com.itextpdf:itextpdf:5.5.13.3")
             }
         }
         val jvmTest by getting

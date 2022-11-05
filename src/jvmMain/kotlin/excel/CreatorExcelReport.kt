@@ -5,6 +5,9 @@ import io.github.evanrupert.excelkt.workbook
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import utils.replaceLastElement
+import utils.toKbait
+import utils.toMbait
 import java.io.File
 import kotlin.math.pow
 
@@ -18,16 +21,22 @@ class CreatorExcelReport(
                 sheet("Customers") {
                     row {
                         cell("Имя")
-                        cell("Размер, бит")
+                        cell("Имя с заменой подчеркивания")
+                        cell("Количество страниц")
+//                        cell("Размер, бит")
                         cell("Размер, КБ")
-                        cell("Размер, МБ")
+//                        cell("Размер, МБ")
                     }
                     for (fileData in filesData)
                         row {
-                            cell(fileData.name)
-                            cell(fileData.size)
-                            cell(fileData.size * 0.0009766)
-                            cell(fileData.size * 9.5367431 * 10.0.pow(-7))
+                            with(fileData) {
+                                cell(name)
+                                cell(name.replaceLastElement('_', '/'))
+                                cell(pageCount)
+//                                cell(size)
+                                cell(size.toKbait())
+//                                cell(size.toMbait())
+                            }
                         }
                 }
             }.write(file.absolutePath)

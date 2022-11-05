@@ -14,12 +14,12 @@ import excel.CreatorExcelReport
 import kotlinx.coroutines.CoroutineScope
 import ui.views.fileManager.Dialog
 import ui.views.fileManager.DialogFile
+import utils.getPageCount
 import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 @Preview
 fun App(frameScope: FrameWindowScope) {
-    var text by remember { mutableStateOf("Hello, World!") }
     var condition by remember { mutableStateOf(Сondition.DEFAULT) }
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     var fileData by remember { mutableStateOf<List<FileData>>(emptyList()) }
@@ -34,7 +34,8 @@ fun App(frameScope: FrameWindowScope) {
                 },
                 onSaveToExcel = {
                     condition = Сondition.SAVING
-                }
+                },
+                filesData = fileData
             )
         }
 
@@ -42,18 +43,22 @@ fun App(frameScope: FrameWindowScope) {
             DialogFile(
                 coroutineScope = coroutineScope,
                 scope = frameScope,
+                extensions = listOf(FileNameExtensionFilter("Pdf file", "pdf")),
                 onResult = { files ->
-                    val filesData = mutableListOf<FileData>()
-                    files.forEach { file ->
-                        filesData.add(
-                            FileData(
-                                name = file.name,
-                                size = file.length()
+                    if (!files.isEmpty()) {
+                        val filesData = mutableListOf<FileData>()
+                        files.forEach { file ->
+                            filesData.add(
+                                FileData(
+                                    name = file.name,
+                                    size = file.length(),
+                                    pageCount = getPageCount(file)
+                                )
                             )
-                        )
+                        }
+                        fileData = filesData
+                        condition = Сondition.HAVE_FILES_AT_MEMORY
                     }
-                    fileData = filesData
-                    condition = Сondition.HAVE_FILES_AT_MEMORY
                 }
             )
         }

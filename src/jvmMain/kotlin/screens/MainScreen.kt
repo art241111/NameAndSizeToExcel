@@ -1,3 +1,4 @@
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,44 +11,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import data.FileData
 import data.Сondition
+import views.DataTable
 
 @Composable
-fun MainScreen (
-    condition : Сondition,
+fun MainScreen(
+    condition: Сondition,
     onLoadFile: () -> Unit,
-    onSaveToExcel: () -> Unit
+    onSaveToExcel: () -> Unit,
+    filesData: List<FileData>
 ) {
-    LazyColumn (horizontalAlignment = Alignment.CenterHorizontally) {
-        item {
-            Text(
-                text = "Загрузка имя и размер файла в ексель таблицу",
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Text(
+            text = "Загрузка имя и размер файла в ексель таблицу",
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(20.dp))
+
+        Button(
+            onClick = onLoadFile
+        ) {
+            Text("Загрузить файлы")
         }
-        item {
-            Spacer(Modifier.height(20.dp))
-        }
-        item {
+        if (condition != Сondition.SAVING) {
             Button(
-                onClick = onLoadFile
+                enabled = condition == Сondition.HAVE_FILES_AT_MEMORY,
+                onClick = onSaveToExcel
             ) {
-                Text("Загрузить файлы")
+                Text("Загрузить в екселе")
             }
+        } else {
+            CircularProgressIndicator()
         }
-        item {
-            if (condition != Сondition.SAVING) {
-                Button(
-                    enabled = condition == Сondition.HAVE_FILES_AT_MEMORY,
-                    onClick = onSaveToExcel
-                ) {
-                    Text("Загрузить в екселе")
-                }
-            } else {
-                CircularProgressIndicator()
-            }
-        }
+
+
+//        DataTable(filesData)
 
 
     }
